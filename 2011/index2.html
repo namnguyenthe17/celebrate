@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng 20/11 - Cô Giáo Mầm Non Tương Lai 💖</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Google Fonts: Quicksand & Pacifico -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif'],
+                        dancing: ['Dancing Script', 'cursive'],
+                    },
+                    colors: {
+                        pastelPink: '#FFD1DC',
+                        pastelYellow: '#FFF5BA',
+                        pastelBlue: '#C5E3F6',
+                        pastelPurple: '#E2D5F8',
+                        warmRed: '#FF6B81',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff0f5 0%, #e6e6fa 50%, #fff9e6 100%);
+            overflow-x: hidden;
+        }
+
+        .font-cute {
+            font-family: 'Fredoka', cursive;
+        }
+
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .animate-float-slow {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Heart Pulse */
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .animate-pulse-heart {
+            animation: pulse-heart 1.5s infinite;
+        }
+
+        /* Canvas background overlay */
+        #heart-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+        }
+
+        /* Envelope CSS flip/toggle */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ffb6c1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-gray-700 min-h-screen relative pb-16">
+
+    <canvas id="heart-canvas"></canvas>
+
+    <!-- Hidden YouTube Iframe Container -->
+    <div class="hidden">
+        <div id="youtube-player"></div>
+    </div>
+
+    <!-- Floating Audio & YouTube Control Widget -->
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <!-- Settings button to change YouTube link directly on screen -->
+        <button id="btnOpenYTModal" title="Đổi link nhạc YouTube" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-pink-200 text-pink-500 hover:bg-pink-50">
+            <i class="fa-solid fa-gear text-lg animate-spin-slow"></i>
+        </button>
+
+        <!-- Music Play/Pause Toggle -->
+        <button id="musicToggle" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-pink-200 text-pink-500 flex items-center gap-2 group">
+            <i id="musicIcon" class="fa-solid fa-music text-xl animate-bounce"></i>
+            <span id="musicText" class="text-xs font-bold text-pink-600 max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 whitespace-nowrap px-0 group-hover:px-1">Bật Nhạc YouTube 🎵</span>
+        </button>
+    </div>
+
+    <!-- YouTube Link Input Modal -->
+    <div id="ytModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border-2 border-pink-200 relative animate-float-slow">
+            <button id="btnCloseYTModal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-8 h-8 rounded-full flex items-center justify-center bg-gray-100">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-2 text-xl">
+                    <i class="fa-brands fa-youtube"></i>
+                </div>
+                <h3 class="font-cute font-bold text-xl text-gray-800">Cài Đặt Nhạc YouTube</h3>
+                <p class="text-xs text-gray-500 mt-1">Dán đường dẫn (link) video YouTube bài hát bạn muốn phát làm nhạc nền</p>
+            </div>
+            <div class="space-y-3">
+                <input type="text" id="ytUrlInput" placeholder="VD: https://www.youtube.com/watch?v=..." class="w-full px-4 py-2.5 rounded-xl border-2 border-pink-200 focus:border-pink-500 focus:outline-none text-sm text-gray-700" />
+                <button id="btnSaveYTUrl" class="w-full py-2.5 bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold rounded-xl shadow-md hover:from-pink-600 hover:to-rose-500 transition-all text-sm">
+                    Cập Nhật Nhạc Mới ✨
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-4xl mx-auto px-4 pt-8">
+
+        <!-- HEADER / HERO SECTION -->
+        <header class="text-center my-6 relative">
+            <!-- Decorative Cute Icons -->
+            <div class="absolute -top-6 left-4 text-3xl animate-float text-yellow-400">
+                <i class="fa-solid fa-sun"></i>
+            </div>
+            <div class="absolute top-2 right-6 text-3xl animate-float-slow text-pink-400">
+                <i class="fa-solid fa-cloud-rainbow"></i>
+            </div>
+            
+            <span class="inline-block px-4 py-1.5 rounded-full bg-pink-100 text-pink-600 text-sm font-bold tracking-wide uppercase mb-3 shadow-sm border border-pink-200">
+                🌸 Tri Ân 20 Tháng 11 Đặc Biệt 🌸
+            </span>
+
+            <h1 class="text-3xl sm:text-5xl font-cute font-bold text-pink-600 leading-tight mb-2 drop-shadow-sm">
+                Chúc Mừng Ngày Nhà Giáo Việt Nam!
+            </h1>
+            <p class="text-lg sm:text-xl font-bold text-purple-600 font-cute">
+                Gửi tới Cô Giáo Mầm Non Tương Lai Dễ Thương Nhất Vũ Trụ 🎈
+            </p>
+
+            <!-- Cute Preschool Avatar Illustration -->
+            <div class="mt-6 inline-block relative">
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-tr from-pink-200 via-purple-200 to-yellow-100 p-2 shadow-xl mx-auto animate-float">
+                    <div class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden border-4 border-pink-300 relative">
+                        <!-- Custom SVG Cartoon Illustration of a Teacher with Kids -->
+                        <svg class="w-24 h-24 text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 14c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z" fill="#FFD1DC" stroke="#FF6B81"/>
+                            <path d="M12 14c-3.87 0-7 2.13-7 4.75V20h14v-1.25c0-2.62-3.13-4.75-7-4.75z" fill="#E2D5F8" stroke="#8B5CF6"/>
+                            <path d="M12 4V2M4.22 4.22l1.42 1.42M1 12h2M19.78 4.22l-1.42 1.42M23 12h-2" stroke="#F59E0B" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <span class="absolute bottom-0 right-2 bg-yellow-300 text-yellow-800 text-xs font-extrabold px-3 py-1 rounded-full shadow-md transform rotate-12">
+                    Cô Giáo Tương Lai 🌟
+                </span>
+            </div>
+        </header>
+
+        <!-- LETTER SECTION -->
+        <section class="my-10">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border-2 border-pink-100">
+                <div class="absolute top-0 right-0 -mr-6 -mt-6 w-24 h-24 bg-pink-200 rounded-full opacity-50 blur-xl"></div>
+                <div class="absolute bottom-0 left-0 -ml-6 -mb-6 w-24 h-24 bg-purple-200 rounded-full opacity-50 blur-xl"></div>
+
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-full bg-pink-500 text-white flex items-center justify-center text-xl shadow-md">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-bold font-cute text-pink-600">Bức Thư Gửi Cô Giáo Nhỏ</h2>
+                        <p class="text-xs text-gray-500">Chạm vào bên dưới để đọc lời nhắn ngọt ngào nhé!</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/90 rounded-2xl p-5 sm:p-7 shadow-inner text-gray-700 leading-relaxed border border-pink-100 relative">
+                    <p class="font-handwriting text-2xl text-pink-600 mb-3">Em yêu à,</p>
+                    <p class="mb-4">
+                        Hôm nay là <b>20/11 - Ngày Nhà giáo Việt Nam</b>, tuy em vẫn còn đang học tập và chuẩn bị bước tiếp trên con đường đứng trên bục giảng, nhưng trong lòng anh, em đã là một <b>cô giáo mầm non tuyệt vời nhất</b> từ lâu rồi!
+                    </p>
+                    <p class="mb-4">
+                        Nghề giáo viên mầm non vất vả lắm: phải dỗ dành từng bữa ăn, dạy từng điệu múa, nụ cười, chịu đựng bao nhiêu tiếng khóc nhè của các em nhỏ. Nhưng anh tin, với sự <b>dịu dàng, kiên nhẫn và trái tim ấm áp</b> của em, em sẽ là "người mẹ thứ hai" được tất cả các con yêu quý.
+                    </p>
+                    <p class="mb-4">
+                        Chúc em tương lai sẽ trở thành một cô giáo mầm non luôn tràn đầy năng lượng, luôn giữ được nụ cười rạng rỡ và tình yêu thương vô bờ với trẻ thơ. Dù có mệt mỏi hay áp lực đến đâu, nhớ rằng <b>anh luôn ở đây để ôm em và tự hào về em!</b> 💖
+                    </p>
+                    <div class="text-right font-handwriting text-2xl text-purple-600 font-bold mt-4">
+                        ~ Mãi yêu & ủng hộ em, Bạn Đời Của Em ~
+                    </div>
+                </div>
+
+                <!-- Interactive Button triggering Confetti -->
+                <div class="text-center mt-6">
+                    <button id="btnCelebrate" class="bg-gradient-to-r from-pink-500 to-rose-400 hover:from-pink-600 hover:to-rose-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transform active:scale-95 transition duration-300 flex items-center gap-2 mx-auto text-base">
+                        <i class="fa-solid fa-heart animate-pulse-heart"></i>
+                        <span>Thả Pháo Hoa Chúc Mừng Em!</span>
+                        <i class="fa-solid fa-sparkles"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- WHY YOU'LL BE AN AMAZING TEACHER -->
+        <section class="my-10">
+            <h3 class="text-2xl font-cute font-bold text-center text-purple-700 mb-6 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-star text-yellow-400"></i>
+                <span>Vì Sao Em Sẽ Là Cô Giáo Mầm Non Tuyệt Vời?</span>
+                <i class="fa-solid fa-star text-yellow-400"></i>
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- Card 1 -->
+                <div class="glass-card rounded-2xl p-5 text-center hover:-translate-y-2 transition-all duration-300 border-b-4 border-pink-400">
+                    <div class="w-14 h-14 bg-pink-100 text-pink-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-sm">
+                        <i class="fa-solid fa-face-smile-beam"></i>
+                    </div>
+                    <h4 class="font-cute font-bold text-lg text-pink-600 mb-1">Nụ Cười Tỏa Nắng</h4>
+                    <p class="text-sm text-gray-600">Nụ cười của em đủ sức làm dịu đi bất kỳ tiếng khóc nhè nào của các em nhỏ khi tới lớp!</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card rounded-2xl p-5 text-center hover:-translate-y-2 transition-all duration-300 border-b-4 border-yellow-400">
+                    <div class="w-14 h-14 bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-sm">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                    <h4 class="font-cute font-bold text-lg text-yellow-600 mb-1">Trái Tim Siêu Kiên Nhẫn</h4>
+                    <p class="text-sm text-gray-600">Sự tỉ mỉ, nhẹ nhàng và chu đáo của em là phẩm chất quý giá nhất của một cô giáo mầm non.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card rounded-2xl p-5 text-center hover:-translate-y-2 transition-all duration-300 border-b-4 border-purple-400">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-sm">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </div>
+                    <h4 class="font-cute font-bold text-lg text-purple-600 mb-1">Anh Luôn Là Hậu Phương</h4>
+                    <p class="text-sm text-gray-600">Dù ngày dạy học có mệt mỏi thế nào, anh hứa luôn ở bên đón em, lắng nghe và tiếp năng lượng cho em!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE LOVE COUPON / GIFT JAR -->
+        <section class="my-10">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-pink-50 via-purple-50 to-amber-50 shadow-xl border-2 border-pink-200">
+                <div class="text-center mb-6">
+                    <span class="text-3xl">🎁</span>
+                    <h3 class="text-2xl font-cute font-bold text-pink-600">Hũ Phụ Cấp Năng Lượng Cho Cô Giáo</h3>
+                    <p class="text-sm text-gray-600 mt-1">Rút một lá phiếu đặc biệt dành riêng cho em nhân ngày 20/11 nào!</p>
+                </div>
+
+                <div class="flex flex-col items-center justify-center">
+                    <button id="btnDrawCoupon" class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95">
+                        <i class="fa-solid fa-gift text-xl mr-2 animate-bounce"></i>
+                        <span>Rút Phiếu Đổi Quà Tình Yêu 🎟️</span>
+                    </button>
+
+                    <!-- Result Box (Hidden by default) -->
+                    <div id="couponResult" class="hidden mt-6 w-full max-w-md bg-white p-5 rounded-2xl shadow-md border-2 border-dashed border-pink-300 text-center transform transition-all duration-500 scale-90 opacity-0">
+                        <div class="text-xs uppercase font-bold text-pink-400 tracking-widest mb-1">Lá Phiếu Đặc Biệt</div>
+                        <h4 id="couponTitle" class="text-xl font-cute font-bold text-purple-700 mb-2">...</h4>
+                        <p id="couponDesc" class="text-sm text-gray-600 italic">...</p>
+                        <div class="mt-3 text-xs text-pink-500 font-semibold">✨ Hạn sử dụng: Vĩnh viễn (Chỉ cần em yêu cầu!) ✨</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SWEET PROMISES / MEMORY GALLERY FRAME -->
+        <section class="my-10">
+            <h3 class="text-2xl font-cute font-bold text-center text-pink-600 mb-6 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-camera-retro"></i>
+                <span>Góc Kỷ Niệm & Lời Chúc</span>
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-rotate-1 border border-pink-100">
+                    <div class="h-48 rounded-xl bg-pink-100 overflow-hidden relative flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=600&q=80" 
+                             alt="Cô giáo mầm non" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/600x400/ffb6c1/ffffff?text=Co+Giao+Mam+Non'"/>
+                        <span class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">Ước Mơ Bục Giảng</span>
+                    </div>
+                    <p class="mt-3 font-cute text-sm text-gray-700 text-center font-medium">
+                        "Mỗi ngày đến trường là một ngày vui - Chúc cô giáo tương lai luôn rực rỡ!" 🎈
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:rotate-1 border border-pink-100">
+                    <div class="h-48 rounded-xl bg-purple-100 overflow-hidden relative flex items-center justify-center">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80" 
+                             alt="Trẻ em mầm non" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://placehold.co/600x400/e2d5f8/ffffff?text=Yeu+Thuong+Tre+Tho'"/>
+                        <span class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">Nụ Cười Trẻ Thơ</span>
+                    </div>
+                    <p class="mt-3 font-cute text-sm text-gray-700 text-center font-medium">
+                        "Sau này các bé mầm non sẽ hạnh phúc lắm vì có một cô giáo dịu dàng như em!" 🧸
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center mt-12 pt-6 border-t border-pink-200/60 text-sm text-gray-500 font-medium">
+            <p class="flex items-center justify-center gap-1">
+                <span>Thiết kế dành riêng cho cô giáo mầm non của anh với</span>
+                <i class="fa-solid fa-heart text-red-500 animate-pulse"></i>
+            </p>
+            <p class="text-xs text-gray-400 mt-1">© 20/11 Happy Vietnamese Teacher's Day</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // -------------------------------------------------------------
+        // 1. FLOATING HEART CANVAS ANIMATION
+        // -------------------------------------------------------------
+        const canvas = document.getElementById('heart-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        class FloatingHeart {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + 20;
+                this.size = Math.random() * 15 + 8;
+                this.speedY = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.color = `hsl(${Math.random() * 40 + 330}, 80%, 75%)`;
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                if (this.y < -20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                const topCurveHeight = this.size * 0.3;
+                ctx.moveTo(this.x, this.y + topCurveHeight);
+                // top left curve
+                ctx.bezierCurveTo(
+                    this.x, this.y, 
+                    this.x - this.size / 2, this.y, 
+                    this.x - this.size / 2, this.y + topCurveHeight
+                );
+                // bottom left curve
+                ctx.bezierCurveTo(
+                    this.x - this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+                    this.x, this.y + this.size, 
+                    this.x, this.y + this.size
+                );
+                // bottom right curve
+                ctx.bezierCurveTo(
+                    this.x, this.y + this.size, 
+                    this.x + this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+                    this.x + this.size / 2, this.y + topCurveHeight
+                );
+                // top right curve
+                ctx.bezierCurveTo(
+                    this.x + this.size / 2, this.y, 
+                    this.x, this.y, 
+                    this.x, this.y + topCurveHeight
+                );
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const hearts = Array.from({ length: 25 }, () => new FloatingHeart());
+
+        function animateHearts() {
+            ctx.clearRect(0, 0, width, height);
+            hearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+
+        window.onload = function() {
+            animateHearts();
+        };
+
+        // -------------------------------------------------------------
+        // 2. CELEBRATE CONFETTI BUTTON
+        // -------------------------------------------------------------
+        const btnCelebrate = document.getElementById('btnCelebrate');
+        btnCelebrate.addEventListener('click', () => {
+            // Trigger multi-stage confetti
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 }
+            };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+                colors: ['#ffb6c1', '#ffffff']
+            });
+            fire(0.2, {
+                spread: 60,
+                colors: ['#ff6b81', '#f59e0b']
+            });
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8
+            });
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                colors: ['#e2d5f8', '#c5e3f6']
+            });
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+            });
+        });
+
+        // -------------------------------------------------------------
+        // 3. LOVE COUPON / GIFT DRAWING LOGIC
+        // -------------------------------------------------------------
+        const coupons = [
+            {
+                title: "🎟️ 1 Buổi Massage Vai Áp Lực Dạy Học",
+                desc: "Được xoa bóp vai tay miễn phí 30 phút sau mỗi buổi đi thực tập hoặc giảng dạy mệt mỏi!"
+            },
+            {
+                title: "🧋 1 Ly Trà Sữa Size L Đầy Topping",
+                desc: "Được cấp ngay 1 ly trà sữa chuẩn gu bất cứ lúc nào cô giáo kêu thèm!"
+            },
+            {
+                title: "🛵 1 Chuyến Đưa Đón Tận Nơi 1 Tuần",
+                desc: "Được làm bác tài riêng đưa đón cô giáo đi học/đi làm đúng giờ, chu đáo!"
+            },
+            {
+                title: "🍲 1 Bữa Ăn Tối Lãng Mạn Tự Tay Anh Nấu",
+                desc: "Được phục vụ bữa tối theo yêu cầu riêng, không cần cô giáo phải đụng tay làm gì!"
+            },
+            {
+                title: "🧸 1 Buổi Hò Hẹn Xem Phim & Lắng Nghe",
+                desc: "Được ôm chặt và tâm sự hết mọi áp lực công việc, anh hứa luôn lắng nghe và ôm em!"
+            }
+        ];
+
+        const btnDrawCoupon = document.getElementById('btnDrawCoupon');
+        const couponResult = document.getElementById('couponResult');
+        const couponTitle = document.getElementById('couponTitle');
+        const couponDesc = document.getElementById('couponDesc');
+
+        btnDrawCoupon.addEventListener('click', () => {
+            // Pick random coupon
+            const randomCoupon = coupons[Math.floor(Math.random() * coupons.length)];
+            
+            // Animate effect
+            couponResult.classList.remove('hidden');
+            couponResult.classList.remove('scale-100', 'opacity-100');
+            couponResult.classList.add('scale-90', 'opacity-0');
+
+            setTimeout(() => {
+                couponTitle.textContent = randomCoupon.title;
+                couponDesc.textContent = randomCoupon.desc;
+                couponResult.classList.remove('scale-90', 'opacity-0');
+                couponResult.classList.add('scale-100', 'opacity-100');
+
+                // Confetti mini splash
+                confetti({
+                    particleCount: 40,
+                    spread: 50,
+                    origin: { y: 0.8 }
+                });
+            }, 150);
+        });
+
+        // -------------------------------------------------------------
+        // 4. YOUTUBE MUSIC PLAYER INTEGRATION
+        // -------------------------------------------------------------
+        // 💡 BẠN CÓ THỂ THAY ĐỔI LINK YOUTUBE MẶC ĐỊNH BÊN DƯỚI NÀY:
+        let currentYouTubeUrl = "https://www.youtube.com/watch?v=5Eqb_-j3FDA"; // Thay link YT mặc định ở đây
+
+        let ytPlayer = null;
+        let isYTReady = false;
+        let isPlaying = false;
+
+        // Extract YouTube Video ID from any format URL or ID string
+        function extractYouTubeID(urlOrId) {
+            if (!urlOrId) return '';
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = urlOrId.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : urlOrId.trim();
+        }
+
+        // Load YouTube Iframe API Script dynamically
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Global callback for YouTube API
+        window.onYouTubeIframeAPIReady = function() {
+            const videoId = extractYouTubeID(currentYouTubeUrl);
+            ytPlayer = new YT.Player('youtube-player', {
+                height: '0',
+                width: '0',
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': videoId
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+
+        function onPlayerReady(event) {
+            isYTReady = true;
+            ytPlayer.setVolume(80);
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                updateMusicUI(true);
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                isPlaying = false;
+                updateMusicUI(false);
+            }
+        }
+
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+
+        function updateMusicUI(active) {
+            if (active) {
+                musicIcon.classList.remove('fa-music');
+                musicIcon.classList.add('fa-pause');
+                musicText.textContent = "Tắt Nhạc";
+            } else {
+                musicIcon.classList.remove('fa-pause');
+                musicIcon.classList.add('fa-music');
+                musicText.textContent = "Bật Nhạc YouTube 🎵";
+            }
+        }
+
+        musicToggle.addEventListener('click', () => {
+            if (!isYTReady || !ytPlayer) return;
+
+            if (!isPlaying) {
+                ytPlayer.playVideo();
+            } else {
+                ytPlayer.pauseVideo();
+            }
+        });
+
+        // Modal Controls for changing YouTube URL
+        const ytModal = document.getElementById('ytModal');
+        const btnOpenYTModal = document.getElementById('btnOpenYTModal');
+        const btnCloseYTModal = document.getElementById('btnCloseYTModal');
+        const btnSaveYTUrl = document.getElementById('btnSaveYTUrl');
+        const ytUrlInput = document.getElementById('ytUrlInput');
+
+        btnOpenYTModal.addEventListener('click', () => {
+            ytUrlInput.value = currentYouTubeUrl;
+            ytModal.classList.remove('hidden');
+        });
+
+        btnCloseYTModal.addEventListener('click', () => {
+            ytModal.classList.add('hidden');
+        });
+
+        btnSaveYTUrl.addEventListener('click', () => {
+            const inputVal = ytUrlInput.value.trim();
+            if (inputVal) {
+                currentYouTubeUrl = inputVal;
+                const newId = extractYouTubeID(currentYouTubeUrl);
+                if (newId && isYTReady && ytPlayer) {
+                    ytPlayer.loadVideoById({
+                        videoId: newId
+                    });
+                    ytPlayer.playVideo();
+                }
+            }
+            ytModal.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

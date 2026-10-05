@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Ngày 20/11 - Gửi Mẹ Yêu Dấu</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 50%, #fbcfe8 100%);
+            overflow-x: hidden;
+        }
+
+        .font-serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Chalkboard style section */
+        .chalkboard {
+            background-color: #1e3a2b;
+            background-image: radial-gradient(#2d543e 15%, transparent 16%), radial-gradient(#274a37 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            border: 12px solid #854d0e;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 25px rgba(0,0,0,0.3);
+            color: #f8fafc;
+        }
+
+        .chalk-text {
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.4);
+        }
+
+        /* Envelope CSS Animation */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope-flap {
+            transform-origin: top;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .letter-content {
+            transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+        }
+
+        /* Floating animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        /* Heart sparkle animation */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(244, 63, 94, 0.8); }
+        }
+
+        .glow-heart {
+            animation: pulseGlow 2.5s infinite;
+        }
+
+        /* Canvas background overlay */
+        #petalCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 relative pb-16">
+
+    <!-- Background Canvas for Falling Petals -->
+    <canvas id="petalCanvas"></canvas>
+
+    <!-- Top Floating Audio & Info Control Bar -->
+    <header class="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <button id="musicToggleBtn" onclick="toggleYoutubeMusic()" class="glass-card px-4 py-2.5 rounded-full shadow-lg hover:bg-white transition duration-300 flex items-center gap-2 text-rose-700 font-semibold text-sm cursor-pointer group border border-rose-200">
+            <i id="musicIcon" class="fa-solid fa-youtube text-lg text-red-600 group-hover:scale-110 transition-transform"></i>
+            <span id="musicText">Bật Nhạc YouTube</span>
+        </button>
+        <button onclick="openYoutubeSettings()" class="glass-card w-10 h-10 rounded-full shadow-lg hover:bg-white transition duration-300 flex items-center justify-center text-rose-700 hover:text-rose-900 border border-rose-200 cursor-pointer" title="Đổi Link Nhạc YouTube">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+    </header>
+
+    <!-- YouTube Settings Modal -->
+    <div id="ytModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card bg-white/95 rounded-2xl p-6 max-w-md w-full shadow-2xl border border-rose-200">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-rose-900 flex items-center gap-2">
+                    <i class="fa-brands fa-youtube text-red-600 text-xl"></i> Cấu Hình Nhạc YouTube
+                </h3>
+                <button onclick="closeYoutubeSettings()" class="text-slate-400 hover:text-slate-600 font-bold text-2xl leading-none">&times;</button>
+            </div>
+            <p class="text-xs text-slate-600 mb-3">Dán đường dẫn (link) video YouTube bài hát bạn muốn phát làm nhạc nền vào đây:</p>
+            <input type="text" id="ytUrlInput" placeholder="Ví dụ: https://www.youtube.com/watch?v=..." class="w-full px-3 py-2.5 text-sm border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 mb-4 bg-white/80">
+            <div class="flex justify-end gap-2">
+                <button onclick="closeYoutubeSettings()" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold hover:bg-slate-300 transition">Hủy</button>
+                <button onclick="saveYoutubeUrl()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-semibold shadow transition">Lưu & Phát Nhạc</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mini YouTube Player Widget (Bottom Right) -->
+    <div id="ytPlayerContainer" class="fixed bottom-4 right-4 z-40 hidden opacity-95 hover:opacity-100 transition-opacity">
+        <div class="glass-card bg-white/95 p-2 rounded-2xl shadow-xl border border-rose-200 flex items-center gap-3">
+            <div class="w-28 h-16 rounded-xl overflow-hidden relative bg-black shadow-inner">
+                <iframe id="ytIframe" class="w-full h-full" src="" title="YouTube audio player" allow="autoplay; encrypted-media"></iframe>
+            </div>
+            <div class="pr-2">
+                <p class="text-xs font-bold text-slate-800 max-w-[130px] truncate">Nhạc 20/11 YouTube</p>
+                <button onclick="toggleYoutubeMusic()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1.5 mt-1">
+                    <i id="miniPlayIcon" class="fa-solid fa-pause"></i> <span id="miniPlayText">Đang phát</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative pt-12 pb-16 px-4 max-w-5xl mx-auto text-center">
+        <!-- Decorative Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-100/90 text-rose-700 border border-rose-300 shadow-sm mb-6 animate-bounce">
+            <i class="fa-solid fa-heart text-rose-500"></i>
+            <span class="text-xs sm:text-sm font-semibold uppercase tracking-wider">Ngày Nhà Giáo Việt Nam 20/11</span>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="text-4xl sm:text-6xl font-serif-title font-bold text-rose-900 leading-tight mb-4 drop-shadow-sm">
+            Gửi Mẹ Yêu – Cô Giáo Kính Yêu Của Con
+        </h1>
+        
+        <p class="text-lg sm:text-xl text-slate-700 max-w-2xl mx-auto font-light leading-relaxed mb-8">
+            Dành tặng Người mẹ vĩ đại – người không chỉ thắp sáng tri thức cho bao thế hệ học trò cấp 2, mà còn là người cô tuyệt vời nhất trong cuộc đời con.
+        </p>
+
+        <!-- Quick Interactive CTA -->
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="#letterSection" class="px-7 py-3.5 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-medium rounded-full shadow-lg hover:shadow-rose-300/50 hover:scale-105 transition duration-300 flex items-center gap-2">
+                <i class="fa-solid fa-envelope-open-text"></i> Mở Món Quà Tri Ân
+            </a>
+            <button onclick="triggerConfetti()" class="px-6 py-3.5 glass-card text-rose-800 font-medium rounded-full shadow hover:bg-white hover:scale-105 transition duration-300 flex items-center gap-2 border border-rose-200">
+                <i class="fa-solid fa-wand-magic-sparkles text-rose-500"></i> Thả Hoa Tri Ân
+            </button>
+        </div>
+    </section>
+
+    <!-- Interactive Letter Section -->
+    <section id="letterSection" class="py-12 px-4 max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-slate-800">Lá Thư Từ Tâm Tình Của Con</h2>
+            <p class="text-slate-600 text-sm mt-1">Chạm vào lá thư bên dưới để đọc lời chúc con gửi tặng Mẹ</p>
+        </div>
+
+        <!-- Envelope / Letter Card -->
+        <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-rose-100">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <!-- Left Side: Interactive Envelope Illustration -->
+                <div class="w-full md:w-1/3 flex flex-col items-center">
+                    <div id="envelopeContainer" onclick="openLetter()" class="w-48 h-48 sm:w-56 sm:h-56 bg-gradient-to-tr from-rose-400 to-pink-300 rounded-2xl shadow-xl flex flex-col items-center justify-center text-white cursor-pointer hover:scale-105 transition-all duration-300 border-4 border-white/60 relative group">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition duration-300">
+                            <i id="envelopeIcon" class="fa-solid fa-envelope text-4xl text-white"></i>
+                        </div>
+                        <span id="clickPrompt" class="font-semibold text-sm px-3 py-1 bg-white/30 rounded-full animate-pulse">Nhấn để mở thư</span>
+                        <div class="absolute -bottom-2 -right-2 bg-amber-400 text-amber-900 text-xs px-2.5 py-1 rounded-full font-bold shadow">
+                            <i class="fa-solid fa-star"></i> 20/11
+                        </div>
+                    </div>
+                    <p class="text-xs text-rose-800 font-medium mt-3 italic text-center">"Nghề giáo – Nghề cao quý nhất trong những nghề cao quý"</p>
+                </div>
+
+                <!-- Right Side: Letter Text -->
+                <div class="w-full md:w-2/3 relative min-h-[300px]">
+                    <!-- Placeholder state when unopened -->
+                    <div id="letterPlaceholder" class="bg-rose-50/80 border-2 border-dashed border-rose-300 rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[300px] transition-all duration-500 shadow-inner">
+                        <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center text-rose-500 text-3xl mb-3 animate-bounce">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <h3 class="font-serif-title text-xl font-bold text-rose-900 mb-2">Lá Thư Đang Đợi Mẹ Mở 💌</h3>
+                        <p class="text-sm text-slate-600 max-w-xs leading-relaxed mb-5">
+                            Mẹ hãy nhấn vào phong thư màu hồng bên cạnh để khám phá bức thư gửi gắm tâm tình con dành tặng Mẹ nhé!
+                        </p>
+                        <button onclick="openLetter()" class="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full text-xs font-semibold shadow-lg hover:scale-105 transition duration-300 flex items-center gap-2">
+                            <i class="fa-solid fa-envelope-open"></i> Nhấn Mở Thư Ngay
+                        </button>
+                    </div>
+
+                    <!-- Actual Letter Content (Hidden by default until clicked) -->
+                    <div id="letterContent" class="hidden opacity-0 scale-95 bg-white/95 p-6 sm:p-8 rounded-2xl shadow-xl border border-rose-200 leading-relaxed text-slate-700 relative min-h-[300px] flex flex-col justify-between transition-all duration-700">
+                        <div class="absolute top-4 right-4 w-14 h-14 border-2 border-dashed border-rose-300 rounded-lg flex items-center justify-center text-rose-400 font-bold text-xs rotate-12 opacity-80 pointer-events-none">
+                            20/11 ❤️
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-handwriting text-rose-700 font-bold mb-3">Mẹ Yêu Của Con,</h3>
+                            <p class="text-sm sm:text-base mb-3 text-justify">
+                                Nhân ngày Nhà giáo Việt Nam 20/11, con muốn gửi tới Mẹ – người cô giáo tuyệt vời nhất – những lời tri âm sâu sắc và ấm áp nhất từ đáy lòng.
+                            </p>
+                            <p class="text-sm sm:text-base mb-3 text-justify">
+                                Con luôn tự hào khi thấy Mẹ miệt mài bên trang giáo án mỗi đêm, nâng niu từng nét chữ, kiên nhẫn giảng giải cho từng lứa học sinh cấp 2 - lứa tuổi hiếu động, nghịch ngợm nhưng cũng đầy tình cảm. Mẹ không chỉ dạy các em kiến thức trên lớp, mà còn dạy các em cách làm người, cách yêu thương và sống có hoài bão.
+                            </p>
+                            <p class="text-sm sm:text-base text-justify">
+                                Với bao thế hệ học trò, Mẹ là cô giáo hiền từ bao dung. Còn với con, Mẹ vừa là người Mẹ tảo tần, vừa là ngọn hải đăng soi sáng từng bước đường con đi.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-rose-100 flex justify-between items-end">
+                            <button onclick="openLetter()" class="text-xs text-rose-500 hover:text-rose-700 underline font-medium">
+                                <i class="fa-solid fa-rotate-left"></i> Gấp thư lại
+                            </button>
+                            <div class="text-right">
+                                <span class="font-handwriting text-2xl text-rose-800 font-bold block">Con yêu Mẹ rất nhiều!</span>
+                                <span class="text-xs text-slate-500 italic">Đứa con bé nhỏ của Mẹ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chalkboard Section (Special Dedicated tribute to Cấp 2 Teacher) -->
+    <section class="py-12 px-4 max-w-4xl mx-auto">
+        <div class="chalkboard rounded-3xl p-6 sm:p-10 relative">
+            <!-- Chalkboard Header -->
+            <div class="flex items-center justify-between border-b border-emerald-600/60 pb-4 mb-6">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-amber-300 text-2xl"></i>
+                    <span class="text-amber-200 font-semibold tracking-wider text-sm sm:text-base uppercase">Nhật Ký Bụi Phấn - Khối Cấp 2</span>
+                </div>
+                <span class="text-xs text-emerald-200 opacity-80">Mái Trường & Lớp Học</span>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-emerald-100">
+                <div class="p-4 bg-emerald-900/40 rounded-xl border border-emerald-700/50">
+                    <div class="text-amber-300 text-2xl mb-2"><i class="fa-solid fa-book-open"></i></div>
+                    <h4 class="font-bold text-white mb-1">Giáo Án Đêm Khuya</h4>
+                    <p class="text-xs sm:text-sm text-emerald-200/90 leading-relaxed">
+                        Con nhớ mãi ánh đèn bàn khuya, nơi Mẹ cặm cụi soạn từng bài giảng cho các em học sinh THCS, nâng niu từng bài tập.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-emerald-900/40 rounded-xl border border-emerald-700/50">
+                    <div class="text-amber-300 text-2xl mb-2"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <h4 class="font-bold text-white mb-1">Kiên Nhẫn Vô Biên</h4>
+                    <p class="text-xs sm:text-sm text-emerald-200/90 leading-relaxed">
+                        Uốn nắn học sinh lứa tuổi 12 - 15 chưa bao giờ dễ dàng, nhưng nụ cười bao dung của Mẹ luôn là điểm tựa ấm áp cho các em.
+                    </p>
+                </div>
+
+                <div class="p-4 bg-emerald-900/40 rounded-xl border border-emerald-700/50">
+                    <div class="text-amber-300 text-2xl mb-2"><i class="fa-solid fa-award"></i></div>
+                    <h4 class="font-bold text-white mb-1">Trái Tim Lớn</h4>
+                    <p class="text-xs sm:text-sm text-emerald-200/90 leading-relaxed">
+                        Bao thế hệ học trò đã lớn khôn, trưởng thành từ mái trường cấp 2, vẫn luôn ghi nhớ công ơn dạy dỗ của Cô.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quote on board -->
+            <div class="mt-8 pt-6 border-t border-emerald-600/50 text-center">
+                <p class="chalk-text text-2xl sm:text-3xl text-amber-200">
+                    "Dưới ánh mặt trời, không có nghề nào cao quý hơn nghề dạy học."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Memory & Qualities Cards -->
+    <section class="py-12 px-4 max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl sm:text-3xl font-serif-title font-bold text-slate-800">Nghệ Thuật Kính Tặng Mẹ</h2>
+            <p class="text-slate-600 text-sm mt-1">Những điều tuyệt vời làm nên Cô Giáo – Mẹ Yêu</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Card 1 -->
+            <div class="glass-card p-6 rounded-2xl shadow-lg hover:-translate-y-2 transition duration-300 border border-white flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 text-2xl mb-4 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-pen-nib"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 mb-2">Bút Mực & Phấn Trắng</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Bụi phấn rơi vương trên tóc Mẹ, vẽ nên những chân trời tri thức bao la cho thế hệ trẻ.
+                </p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="glass-card p-6 rounded-2xl shadow-lg hover:-translate-y-2 transition duration-300 border border-white flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 text-2xl mb-4 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-hands-holding-child"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 mb-2">Tình Yêu Học Trò</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Sự thấu hiểu và lòng bao dung dành cho từng học sinh cấp 2 hiếu động, giúp các em vững bước.
+                </p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="glass-card p-6 rounded-2xl shadow-lg hover:-translate-y-2 transition duration-300 border border-white flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 text-2xl mb-4 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-sun"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 mb-2">Ấm Áp Gia Đình</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Dù bận rộn công việc giảng dạy, Mẹ vẫn luôn giữ ngọn lửa ấm áp cho mái tổ gia đình chúng ta.
+                </p>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="glass-card p-6 rounded-2xl shadow-lg hover:-translate-y-2 transition duration-300 border border-white flex flex-col items-center text-center group">
+                <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-2xl mb-4 group-hover:scale-110 transition duration-300">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 mb-2">Ươm Mầm Tương Lai</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Mỗi hạt giống tri thức Mẹ gieo trồng hôm nay sẽ gặt hái ngàn quả ngọt cho tương lai mai sau.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Bouquet & Wishes Generator -->
+    <section class="py-12 px-4 max-w-4xl mx-auto">
+        <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-200 text-center">
+            <div class="max-w-xl mx-auto">
+                <span class="text-rose-600 text-3xl mb-2 inline-block"><i class="fa-solid fa-spa"></i></span>
+                <h2 class="text-2xl font-serif-title font-bold text-slate-800 mb-2">Gửi Bó Hoa & Lời Chúc May Mắn</h2>
+                <p class="text-slate-600 text-sm mb-6">Nhấn vào nút bên dưới để tạo bó hoa tươi thắm và lời chúc ngẫu nhiên dành tặng Mẹ</p>
+
+                <!-- Dynamic Wish Display Box -->
+                <div id="wishBox" class="bg-rose-50/80 p-5 rounded-2xl border border-rose-200 mb-6 text-rose-900 font-medium text-base sm:text-lg min-h-[90px] flex items-center justify-center transition-all duration-300 shadow-sm">
+                    "Kính chúc Mẹ yêu 20/11 luôn mạnh khỏe, hạnh phúc và tràn đầy nhiệt huyết với sự nghiệp trồng người!"
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="generateNewWish()" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-full font-semibold shadow-md transition hover:scale-105 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-rotate"></i> Tạo Lời Chúc Mới
+                    </button>
+                    <button onclick="sendVirtualFlowers()" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-semibold shadow-md transition hover:scale-105 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-seedling"></i> Tặng 100 Bông Hoa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-16 text-center text-slate-600 text-xs sm:text-sm px-4">
+        <div class="max-w-md mx-auto border-t border-rose-200/60 pt-6">
+            <p class="font-handwriting text-2xl text-rose-700 mb-1">Chúc Mẹ Ngày 20/11 Vui Vẻ & Trọn Vẹn Hạnh Phúc!</p>
+            <p class="text-slate-500">Được thiết kế với tất cả tình yêu thương dành cho Mẹ yêu ❤️</p>
+        </div>
+    </footer>
+
+    <script>
+        /* Floating Petals Canvas Logic */
+        const canvas = document.getElementById('petalCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        class Petal {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = -20;
+                this.size = Math.random() * 8 + 6;
+                this.speedY = Math.random() * 1.5 + 0.8;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.angle = Math.random() * 360;
+                this.spin = Math.random() * 2 - 1;
+                this.color = `rgba(244, ${Math.floor(Math.random() * 100 + 100)}, ${Math.floor(Math.random() * 120 + 130)}, ${Math.random() * 0.4 + 0.5})`;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.y * 0.01) + this.speedX;
+                this.angle += this.spin;
+
+                if (this.y > height + 20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.angle * Math.PI) / 180);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size / 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const petals = Array.from({ length: 40 }, () => new Petal());
+
+        function animatePetals() {
+            ctx.clearRect(0, 0, width, height);
+            petals.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animatePetals);
+        }
+
+        animatePetals();
+
+        /* YouTube Music Integration Logic */
+        // Bạn có thể thay đổi Mã Video (ID) mặc định ở đây (ví dụ: g-P9B_BqU50)
+        let youtubeVideoId = "g-P9B_BqU50";
+        let isYtPlaying = false;
+
+        function extractYoutubeId(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function openYoutubeSettings() {
+            document.getElementById('ytModal').classList.remove('hidden');
+        }
+
+        function closeYoutubeSettings() {
+            document.getElementById('ytModal').classList.add('hidden');
+        }
+
+        function saveYoutubeUrl() {
+            const inputVal = document.getElementById('ytUrlInput').value.trim();
+            const extractedId = extractYoutubeId(inputVal);
+            if (extractedId) {
+                youtubeVideoId = extractedId;
+                playYoutubeMusic();
+                closeYoutubeSettings();
+            } else {
+                // Sử dụng thông báo trực quan thay cho alert
+                const input = document.getElementById('ytUrlInput');
+                input.classList.add('border-red-500', 'ring-2', 'ring-red-300');
+                setTimeout(() => input.classList.remove('border-red-500', 'ring-2', 'ring-red-300'), 2000);
+            }
+        }
+
+        function playYoutubeMusic() {
+            const iframe = document.getElementById('ytIframe');
+            const musicText = document.getElementById('musicText');
+            const musicIcon = document.getElementById('musicIcon');
+            const miniIcon = document.getElementById('miniPlayIcon');
+            const miniText = document.getElementById('miniPlayText');
+            const container = document.getElementById('ytPlayerContainer');
+
+            iframe.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&enablejsapi=1&loop=1&playlist=${youtubeVideoId}`;
+            
+            isYtPlaying = true;
+            musicText.innerText = "Tắt Nhạc YouTube";
+            musicIcon.className = "fa-solid fa-circle-pause text-lg text-red-600 animate-pulse";
+            miniIcon.className = "fa-solid fa-pause";
+            miniText.innerText = "Đang phát";
+            container.classList.remove('hidden');
+        }
+
+        function stopYoutubeMusic() {
+            const iframe = document.getElementById('ytIframe');
+            const musicText = document.getElementById('musicText');
+            const musicIcon = document.getElementById('musicIcon');
+            const miniIcon = document.getElementById('miniPlayIcon');
+            const miniText = document.getElementById('miniPlayText');
+            
+            iframe.src = "";
+            isYtPlaying = false;
+            musicText.innerText = "Bật Nhạc YouTube";
+            musicIcon.className = "fa-solid fa-youtube text-lg text-red-600 group-hover:scale-110 transition-transform";
+            miniIcon.className = "fa-solid fa-play";
+            miniText.innerText = "Tạm dừng";
+        }
+
+        function toggleYoutubeMusic() {
+            if (!isYtPlaying) {
+                playYoutubeMusic();
+            } else {
+                stopYoutubeMusic();
+            }
+        }
+
+        /* Letter Opening Effect */
+        let isOpen = false;
+        function openLetter() {
+            const container = document.getElementById('envelopeContainer');
+            const icon = document.getElementById('envelopeIcon');
+            const prompt = document.getElementById('clickPrompt');
+            const placeholder = document.getElementById('letterPlaceholder');
+            const content = document.getElementById('letterContent');
+            
+            isOpen = !isOpen;
+            if (isOpen) {
+                container.classList.add('ring-4', 'ring-rose-300');
+                icon.className = "fa-solid fa-heart-open text-5xl text-white animate-bounce";
+                prompt.innerText = "Thư đã mở ✨";
+
+                // Smoothly switch from placeholder to letter content
+                placeholder.classList.add('hidden', 'opacity-0');
+                content.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    content.classList.remove('opacity-0', 'scale-95');
+                    content.classList.add('opacity-100', 'scale-100');
+                }, 50);
+
+                triggerConfetti();
+            } else {
+                container.classList.remove('ring-4', 'ring-rose-300');
+                icon.className = "fa-solid fa-envelope text-4xl text-white";
+                prompt.innerText = "Nhấn để mở thư";
+
+                // Smoothly hide letter content and show placeholder
+                content.classList.remove('opacity-100', 'scale-100');
+                content.classList.add('opacity-0', 'scale-95');
+                
+                setTimeout(() => {
+                    content.classList.add('hidden');
+                    placeholder.classList.remove('hidden');
+                    setTimeout(() => placeholder.classList.remove('opacity-0'), 50);
+                }, 300);
+            }
+        }
+
+        /* Interactive Wishes List */
+        const wishes = [
+            "Kính chúc Mẹ yêu 20/11 luôn mạnh khỏe, hạnh phúc và tràn đầy nhiệt huyết với sự nghiệp trồng người!",
+            "Cảm ơn Mẹ vì luôn là ngọn hải đăng soi sáng và dìu dắt con cũng như bao thế hệ học trò trưởng thành!",
+            "Chúc Mẹ mãi giữ vững nụ cười hiền hậu, luôn được học sinh yêu mến và kính trọng mỗi ngày lên lớp!",
+            "Mẹ là cô giáo tuyệt vời nhất trên bục giảng và cũng là người Mẹ vĩ đại nhất trong lòng con!",
+            "Kính chúc Cô giáo - Mẹ yêu một ngày 20/11 tràn ngập hoa thắm, quà vui và ngập tràn tình yêu thương!"
+        ];
+
+        let currentWishIndex = 0;
+        function generateNewWish() {
+            const wishBox = document.getElementById('wishBox');
+            currentWishIndex = (currentWishIndex + 1) % wishes.length;
+            wishBox.style.opacity = '0';
+            setTimeout(() => {
+                wishBox.innerText = `"${wishes[currentWishIndex]}"`;
+                wishBox.style.opacity = '1';
+            }, 200);
+        }
+
+        /* Particle Flower Bursting */
+        function triggerConfetti() {
+            for (let i = 0; i < 25; i++) {
+                const petal = new Petal();
+                petal.x = Math.random() * width;
+                petal.y = Math.random() * (height / 2);
+                petals.push(petal);
+            }
+            // keep array size manageable
+            setTimeout(() => {
+                if (petals.length > 50) {
+                    petals.splice(0, 25);
+                }
+            }, 4000);
+        }
+
+        function sendVirtualFlowers() {
+            triggerConfetti();
+            const wishBox = document.getElementById('wishBox');
+            wishBox.innerHTML = "<span class='text-rose-600 font-bold'>🌸 Đã gửi 100 bông hoa tri âm thắm thiết tới Mẹ Yêu! 🌸</span>";
+        }
+    </script>
+</body>
+</html>
