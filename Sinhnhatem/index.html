@@ -372,7 +372,7 @@
             <!-- Love Letter View -->
             <div id="loveLetterModal" class="hidden mt-8 text-left bg-slate-900/90 border border-pink-400/40 p-6 sm:p-10 rounded-3xl relative shadow-2xl backdrop-blur-md animate-fadeIn">
                 <div class="flex justify-between items-center border-b border-pink-500/20 pb-4 mb-6">
-                    <span class="font-dancing text-2xl sm:text-3xl text-romantic-300">Thư Tình Gửi Em... 💌</span>
+                    <span class="font-dancing text-2xl sm:text-3xl text-romantic-300">Thư Gửi Em... 💌</span>
                     <span class="text-xs sm:text-sm text-romantic-200/80 bg-romantic-500/20 px-3 py-1 rounded-full border border-romantic-400/20">Ngày 06 Tháng 10</span>
                 </div>
                 
@@ -493,7 +493,7 @@
         let senderName = localStorage.getItem('bday_sender_name') || 'Anh';
         let youtubeUrl = localStorage.getItem('bday_yt_url') || '';
         let customLetter = localStorage.getItem('bday_letter') || 
-            `Chúc mừng sinh nhật em! ✨\n\nCảm ơn em đã xuất hiện và mang đến cho anh thật nhiều niềm vui, sự ấm áp và hạnh phúc trong cuộc sống.\n\nChúc em bước sang tuổi mới luôn xinh đẹp, rạng rỡ, tràn ngập tiếng cười và luôn đạt được những điều em hằng mơ ước.\n\nAnh hứa sẽ luôn ở bên cạnh, đồng hành và yêu thương em nhiều hơn mỗi ngày! 💖`;
+            `Chúc mừng sinh nhật em! ✨\n\nCảm ơn em đã xuất hiện và mang đến cho anh thật nhiều niềm vui, sự ấm áp và hạnh phúc trong cuộc sống.\n\nChúc em bước sang tuổi mới luôn xinh đẹp, rạng rỡ, tràn ngập tiếng cười và luôn đạt được những điều em hằng mơ ước.\n\nAnh hứa sẽ luôn ở bên cạnh, đồng hành cùng em mỗi ngày! 💖`;
 
         let candlesBlown = false;
         let isAudioPlaying = false;
@@ -604,7 +604,7 @@
             if (ytId) {
                 // Play via YouTube embed iframe
                 const container = document.getElementById('ytAudioContainer');
-                container.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${ytId}?autoplay=1&enablejsapi=1&loop=1&playlist=${ytId}" frameborder="0" allow="autoplay"></iframe>`;
+                container.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/watch?v=feo5Y-6lPjQ&list=RDfeo5Y-6lPjQ&start_radio=1" frameborder="0" allow="autoplay"></iframe>`;
             } else {
                 // Fallback to synth audio generator
                 try {
