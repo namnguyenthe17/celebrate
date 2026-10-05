@@ -489,7 +489,7 @@
     </div>
 
     <script>
-        let partnerName = localStorage.getItem('bday_partner_name') || 'Em Yêu';
+        let partnerName = localStorage.getItem('bday_partner_name') || 'Dẻo';
         let senderName = localStorage.getItem('bday_sender_name') || 'Anh';
         let youtubeUrl = localStorage.getItem('bday_yt_url') || '';
         let customLetter = localStorage.getItem('bday_letter') || 
@@ -604,7 +604,7 @@
             if (ytId) {
                 // Play via YouTube embed iframe
                 const container = document.getElementById('ytAudioContainer');
-                container.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/watch?v=feo5Y-6lPjQ&list=RDfeo5Y-6lPjQ&start_radio=1" frameborder="0" allow="autoplay"></iframe>`;
+                container.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/feo5Y-6lPjQ?autoplay=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>`;
             } else {
                 // Fallback to synth audio generator
                 try {
