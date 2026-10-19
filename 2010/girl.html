@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Ngày 20/10 - Dành Tặng Em Gái Yêu!</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe3ec 50%, #fbe4e8 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .font-cursive {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .font-pacifico {
+            font-family: 'Pacifico', cursive;
+        }
+
+        /* Glassmorphism card effects */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(236, 72, 153, 0.15);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+            animation: float 5s ease-in-out infinite 2s;
+        }
+
+        /* Pulse Heart Beat */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        .animate-heartbeat {
+            animation: heartbeat 1.8s infinite ease-in-out;
+        }
+
+        /* Shimmer Effect for Buttons */
+        .shimmer-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                60deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 70%
+            );
+            transform: rotate(30deg);
+            animation: shimmer 3.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* Gift Box 3D Shake */
+        @keyframes giftShake {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-8deg) scale(1.05); }
+            40% { transform: rotate(8deg) scale(1.05); }
+            60% { transform: rotate(-5deg) scale(1.05); }
+            80% { transform: rotate(5deg) scale(1.05); }
+        }
+
+        .shake-gift {
+            animation: giftShake 1.2s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffe3ec;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f472b6;
+            border-radius: 4px;
+        }
+
+        canvas#petal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="text-gray-800 relative select-none">
+
+    <canvas id="petal-canvas"></canvas>
+
+    <header class="fixed top-0 left-0 right-0 z-40 glass-nav px-4 py-3 shadow-sm">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl text-pink-500"><i class="fa-solid fa-heart"></i></span>
+                <span class="font-bold text-lg text-pink-600 tracking-wide">20/10 For My Sister</span>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Music Toggle Button -->
+                <button id="music-toggle" onclick="toggleAudio()" class="flex items-center space-x-2 bg-pink-100 hover:bg-pink-200 text-pink-700 px-3 py-1.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-sm border border-pink-300">
+                    <i id="music-icon" class="fa-solid fa-music text-pink-500 animate-pulse"></i>
+                    <span id="music-text">Bật Nhạc</span>
+                </button>
+                <!-- Edit Info Button -->
+                <button onclick="openEditModal()" class="bg-rose-500 hover:bg-rose-600 text-white p-2 rounded-full text-sm transition shadow-md hover:scale-105" title="Đổi tên em gái">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20 pb-16 px-4 max-w-5xl mx-auto relative z-20 space-y-12">
+
+        <section class="text-center py-8 relative">
+            <div class="inline-block px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-sm font-semibold mb-4 border border-pink-200 shadow-sm animate-bounce">
+                🌸 Happy Vietnamese Women's Day 🌹
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 mb-4 leading-tight">
+                Chúc Mừng Ngày 20/10<br>
+                <span class="font-cursive text-5xl md:text-7xl text-rose-500 block mt-2" id="display-sister-name">Em Gái Yêu Quý!</span>
+            </h1>
+            
+            <p class="text-gray-600 max-w-xl mx-auto text-base md:text-lg leading-relaxed mt-2">
+                Gửi tới công chúa nhỏ của gia đình những lời chúc ngọt ngào nhất. Chúc em luôn xinh đẹp, rạng rỡ, hạnh phúc và luôn mỉm cười thật tươi mỗi ngày! ✨
+            </p>
+
+            <!-- Quick Action Interactive Badge -->
+            <div class="mt-6 flex flex-wrap justify-center gap-3">
+                <button onclick="triggerConfetti()" class="shimmer-btn bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold px-6 py-2.5 rounded-full shadow-lg transform hover:-translate-y-0.5 transition active:scale-95 flex items-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Tạo Mưa Hoa & Pháo Hoa</span>
+                </button>
+                <a href="#gift-section" class="bg-white text-pink-600 border border-pink-300 hover:bg-pink-50 font-bold px-6 py-2.5 rounded-full shadow-sm hover:shadow transition flex items-center space-x-2">
+                    <i class="fa-solid fa-gift"></i>
+                    <span>Xem Quà Bí Mật</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-3xl p-6 md:p-8 shadow-xl">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-camera-retro text-rose-500"></i>
+                    <span>Góc Kỷ Niệm & Xinh Đẹp</span>
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">Bức ảnh tuyệt vời nhất ngày hôm nay dành cho em</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center gap-8 justify-center">
+                <!-- Frame Holder -->
+                <div class="relative group">
+                    <div class="w-64 h-64 md:w-72 md:h-72 rounded-2xl p-3 bg-gradient-to-tr from-pink-400 via-rose-300 to-purple-400 shadow-2xl transform rotate-[-2deg] group-hover:rotate-0 transition duration-300">
+                        <div class="w-full h-full bg-white rounded-xl overflow-hidden relative flex items-center justify-center border-2 border-white">
+                            <img id="sister-photo" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Em gái xinh đẹp" class="w-full h-full object-cover">
+                            
+                            <!-- Heart Overlay Badge -->
+                            <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow text-xs font-bold text-pink-600 flex items-center gap-1">
+                                <i class="fa-solid fa-heart text-rose-500"></i> Cute Girl
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Upload custom image button -->
+                    <label class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white text-pink-600 border border-pink-200 px-4 py-1.5 rounded-full shadow-md text-xs font-bold cursor-pointer hover:bg-pink-50 transition flex items-center gap-1">
+                        <i class="fa-solid fa-upload"></i> Đổi Ảnh Em
+                        <input type="file" id="photo-input" accept="image/*" class="hidden" onchange="uploadPhoto(event)">
+                    </label>
+                </div>
+
+                <!-- Expressive Words -->
+                <div class="max-w-md space-y-4 text-center md:text-left">
+                    <div class="bg-pink-50/80 p-4 rounded-2xl border border-pink-100">
+                        <h3 class="font-bold text-pink-700 text-lg flex items-center justify-center md:justify-start gap-2">
+                            <i class="fa-solid fa-crown text-amber-400"></i> Công Chúa Nhỏ
+                        </h3>
+                        <p class="text-gray-600 text-sm mt-1 leading-relaxed">
+                            Dù em có lớn bao nhiêu, đi xa thế nào thì trong mắt gia đình, em vẫn luôn là cô em gái đáng yêu, bướng bỉnh nhưng vô cùng ấm áp!
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-sm text-center">
+                            <span class="block text-xl">🌟</span>
+                            <span class="text-xs font-semibold text-gray-600">Luôn Xinh Đẹp</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-sm text-center">
+                            <span class="block text-xl">📚</span>
+                            <span class="text-xs font-semibold text-gray-600">Thành Công Rực Rỡ</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-sm text-center">
+                            <span class="block text-xl">💖</span>
+                            <span class="text-xs font-semibold text-gray-600">Vui Vẻ Mỗi Ngày</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-pink-100 shadow-sm text-center">
+                            <span class="block text-xl">🎁</span>
+                            <span class="text-xs font-semibold text-gray-600">Ngập Tràn Yêu Thương</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gift-section" class="glass-card rounded-3xl p-8 text-center relative overflow-hidden shadow-xl border-2 border-pink-200">
+            <div class="absolute top-0 right-0 p-4 text-pink-200 text-6xl pointer-events-none opacity-40">
+                <i class="fa-solid fa-gift"></i>
+            </div>
+
+            <h2 class="text-2xl md:text-3xl font-bold text-pink-700 mb-2">Hộp Quà Mơ Ước Dành Cho Em 🎁</h2>
+            <p class="text-gray-600 text-sm mb-6">Bấm vào hộp quà phía dưới để khám phá thông điệp bí mật dành riêng cho em!</p>
+
+            <div class="py-4">
+                <button id="gift-box-btn" onclick="openGift()" class="relative inline-block cursor-pointer focus:outline-none group">
+                    <div id="gift-icon" class="text-8xl md:text-9xl text-pink-500 drop-shadow-xl shake-gift transition duration-300 transform group-hover:scale-110">
+                        🎁
+                    </div>
+                    <div class="mt-4 inline-block bg-rose-500 text-white font-bold px-6 py-2 rounded-full shadow-md group-hover:bg-rose-600 transition text-sm">
+                        Chạm Để Mở Quà ✨
+                    </div>
+                </button>
+            </div>
+
+            <!-- Hidden Message Container -->
+            <div id="secret-message" class="hidden mt-6 bg-white/90 p-6 md:p-8 rounded-2xl border-2 border-pink-300 shadow-xl transition-all duration-500 transform scale-90 opacity-0">
+                <div class="text-4xl mb-3">💌</div>
+                <h3 class="text-2xl font-bold text-pink-600 mb-3 font-cursive text-3xl">Bức Thư Gửi Em Gái Yêu</h3>
+                <div id="custom-letter-body" class="text-gray-700 leading-relaxed text-base space-y-3 max-w-xl mx-auto text-left bg-pink-50/50 p-4 rounded-xl border border-pink-100">
+                    <p>Chào em gái cưng,</p>
+                    <p>Nhân ngày Phụ nữ Việt Nam 20/10, chúc em luôn giữ được nụ cười tươi tắn trên môi. Mong em luôn tự tin bước đi trên con đường em đã chọn, luôn kiên cường trước khó khăn và gặt hái thật nhiều thành công.</p>
+                    <p>Nhớ rằng em luôn có một gia đình tuyệt vời đứng sau ủng hộ, che chở cho em bất cứ lúc nào. Chúc em luôn hạnh phúc, tràn đầy năng lượng và có một ngày 20/10 thật ý nghĩa!</p>
+                    <p class="text-right font-semibold text-rose-600 mt-2">— Gửi từ anh/chị thương yêu em nhất! ❤️</p>
+                </div>
+
+                <div class="mt-6 flex flex-wrap justify-center gap-3">
+                    <button onclick="playCuteSound(); triggerConfetti();" class="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-5 py-2 rounded-full text-sm shadow transition">
+                        💖 Thả Tim Cực Nhiều
+                    </button>
+                    <button onclick="closeGift()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-5 py-2 rounded-full text-sm transition">
+                        Đóng Thư
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-3xl p-6 md:p-8 shadow-xl">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-sparkles text-amber-400"></i>
+                    <span>Những Lời Chúc Ngọt Ngào</span>
+                </h2>
+                <p class="text-xs md:text-sm text-gray-500 mt-1">Chạm vào từng thẻ để xem điều ước ngầm gửi tới em</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Wish Card 1 -->
+                <div class="bg-white/90 p-5 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition text-center space-y-2 transform hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto text-xl">
+                        🌺
+                    </div>
+                    <h4 class="font-bold text-gray-800">Xinh Đẹp & Rạng Rỡ</h4>
+                    <p class="text-xs text-gray-500">Chúc em luôn rạng rỡ như những bông hoa tươi thắm nhất mộc mạc và xinh đẹp.</p>
+                </div>
+
+                <!-- Wish Card 2 -->
+                <div class="bg-white/90 p-5 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition text-center space-y-2 transform hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-500 rounded-full flex items-center justify-center mx-auto text-xl">
+                        ☀️
+                    </div>
+                    <h4 class="font-bold text-gray-800">Tự Tin & Độc Lập</h4>
+                    <p class="text-xs text-gray-500">Chúc em luôn vững vàng, tin vào bản thân và chạm tới mọi ước mơ ước mơ của mình.</p>
+                </div>
+
+                <!-- Wish Card 3 -->
+                <div class="bg-white/90 p-5 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition text-center space-y-2 transform hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto text-xl">
+                        🎈
+                    </div>
+                    <h4 class="font-bold text-gray-800">Bình An & Vui Vẻ</h4>
+                    <p class="text-xs text-gray-500">Mong mỗi ngày trôi qua với em đều ngập tràn niềm vui, không lo âu hay muộn phiền.</p>
+                </div>
+
+                <!-- Wish Card 4 -->
+                <div class="bg-white/90 p-5 rounded-2xl border border-pink-100 shadow-sm hover:shadow-md transition text-center space-y-2 transform hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto text-xl">
+                        🍀
+                    </div>
+                    <h4 class="font-bold text-gray-800">May Mắn Trọn Vẹn</h4>
+                    <p class="text-xs text-gray-500">Chúc cho mọi dự định trong học tập và công việc của em đều diễn ra suôn sẻ, may mắn.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-3xl p-6 md:p-8 text-center space-y-4">
+            <h3 class="text-xl font-bold text-pink-700">🎯 Bốc Thẻ May Mắn Ngày 20/10</h3>
+            <p class="text-xs text-gray-500">Bấm nút bên dưới để xem vũ trụ gửi thông điệp gì cho em hôm nay nhé!</p>
+
+            <div id="fortune-display" class="bg-pink-50 p-4 rounded-xl border border-pink-200 text-pink-800 font-semibold min-h-[60px] flex items-center justify-center text-sm md:text-base">
+                ✨ Bấm "Xem Quẻ May Mắn" để nhận thông điệp ngẫu nhiên!
+            </div>
+
+            <button onclick="drawFortune()" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-6 py-2.5 rounded-full shadow-md transition transform active:scale-95 text-sm">
+                🔮 Xem Quẻ May Mắn
+            </button>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 text-gray-500 text-xs border-t border-pink-200/50 relative z-20">
+        <p>Made with ❤️ for my dearest sister | Happy 20/10 Women's Day</p>
+    </footer>
+
+    <!-- EDIT NAME & LETTER MODAL -->
+    <div id="edit-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-pink-200 transform transition-all">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-lg text-pink-600">Tùy Chỉnh Thông Tin Em Gái</h3>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tên Em Gái:</label>
+                    <input type="text" id="input-sister-name" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-pink-500" placeholder="Ví dụ: Bé Thu, Linh, Trang...">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Lời Chúc Lời Bắt Đầu Thư:</label>
+                    <textarea id="input-letter" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-pink-500" placeholder="Nhập lời nhắn cá nhân của bạn..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeEditModal()" class="px-4 py-2 rounded-xl text-gray-600 text-sm hover:bg-gray-100">Hủy</button>
+                <button onclick="saveSisterInfo()" class="px-5 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-xl text-sm font-bold shadow-md">Lưu Thay Đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State variables
+        let sisterName = "Em Gái Yêu Quý";
+        let isAudioPlaying = false;
+        let audioContext = null;
+        let synthInterval = null;
+
+        // Expanded Custom Fortunes List
+        const fortunes = [
+            "🌸 Hôm nay em là công chúa đẹp nhất, vạn người mê!",
+            "🎉 Hôm nay em sẽ nhận được vô số lời chúc và quà xinh!",
+            "✨ Mọi áp lực học tập/công việc sẽ nhanh chóng tan biến, nhường chỗ cho may mắn!",
+            "☕ Hôm nay rất thích hợp để uống 1 ly trà sữa thật ngon mà không sợ béo!",
+            "🌟 Một niềm vui bất ngờ đang trên đường tìm đến em trong tuần này!",
+            "💖 Em luôn là niềm tự hào và gia đình luôn yêu thương em sâu sắc!",
+            "🌈 Bất kể em ước điều gì hôm nay, vũ trụ đều đang lắng nghe và sẽ biến thành hiện thực!",
+            "🎀 Chúc em luôn xinh đẹp, kiều diễm và lúc nào cũng gặp điều may xịn xịn!",
+            "🍰 Hôm nay ăn bánh ngọt không lo béo, nhận niềm vui không sợ hết!",
+            "⭐ Quẻ phán: Sắp tới em sẽ nhận được một món quà bất ngờ cực xịn!",
+            "🍓 Em là bông hoa xinh đẹp và rạng rỡ nhất trong lòng cả nhà!",
+            "🍀 Thần may mắn đã chọn em làm 'đại sứ hạnh phúc' ngày hôm nay!",
+            "💫 Chúc em đạt điểm cao/thành công rực rỡ trong dự định sắp tới nhé!",
+            "🌷 Vẻ đẹp và sự thông minh của em sẽ luôn soi sáng mọi chặng đường!",
+            "🎁 Vũ trụ gửi tới em 1.000.000 niềm vui và sự ấm áp trong hôm nay!",
+            "🎈 Chúc cô em gái luôn tràn đầy năng lượng tích cực và tươi xắn mỗi ngày!",
+            "🌻 Mọi ước mơ em đang ấp ủ sẽ sớm gặt hái được trái ngọt viên mãn!"
+        ];
+
+        // Non-repeating fortune pool tracker
+        let remainingFortunes = [];
+
+        function getRandomFortune() {
+            if (remainingFortunes.length === 0) {
+                remainingFortunes = [...fortunes];
+                // Fisher-Yates shuffle algorithm for maximum randomness
+                for (let i = remainingFortunes.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [remainingFortunes[i], remainingFortunes[j]] = [remainingFortunes[j], remainingFortunes[i]];
+                }
+            }
+            return remainingFortunes.pop();
+        }
+
+        const canvas = document.getElementById('petal-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Create Petals
+        const petals = [];
+        const petalColors = ['#f472b6', '#fb7185', '#fda4af', '#f43f5e', '#e879f9'];
+
+        for (let i = 0; i < 35; i++) {
+            petals.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 10 + 8,
+                speedY: Math.random() * 1.5 + 0.8,
+                speedX: Math.random() * 1 - 0.5,
+                angle: Math.random() * 360,
+                spin: Math.random() * 2 - 1,
+                color: petalColors[Math.floor(Math.random() * petalColors.length)]
+            });
+        }
+
+        function drawPetals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            petals.forEach(p => {
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.angle * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = 0.7;
+
+                // Draw petal shape
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-p.size, -p.size / 2, -p.size, p.size, 0, p.size);
+                ctx.bezierCurveTo(p.size, p.size, p.size, -p.size / 2, 0, 0);
+                ctx.fill();
+
+                ctx.restore();
+
+                // Update position
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.angle += p.spin;
+
+                if (p.y > canvas.height) {
+                    p.y = -20;
+                    p.x = Math.random() * canvas.width;
+                }
+            });
+
+            requestAnimationFrame(drawPetals);
+        }
+        drawPetals();
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playMelodyNote(freq, duration) {
+            if (!audioContext || !isAudioPlaying) return;
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+
+                gain.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+
+                osc.start();
+                osc.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        function toggleAudio() {
+            initAudio();
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            const musicText = document.getElementById('music-text');
+            const musicIcon = document.getElementById('music-icon');
+
+            if (!isAudioPlaying) {
+                isAudioPlaying = true;
+                musicText.innerText = 'Tắt Nhạc';
+                musicIcon.classList.add('animate-spin');
+
+                // Gentle calming lullaby-style melody
+                const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 349.23, 392.00, 329.63];
+                let noteIdx = 0;
+
+                synthInterval = setInterval(() => {
+                    if (isAudioPlaying) {
+                        playMelodyNote(notes[noteIdx], 1.2);
+                        noteIdx = (noteIdx + 1) % notes.length;
+                    }
+                }, 800);
+            } else {
+                isAudioPlaying = false;
+                musicText.innerText = 'Bật Nhạc';
+                musicIcon.classList.remove('animate-spin');
+                if (synthInterval) clearInterval(synthInterval);
+            }
+        }
+
+        // Sound effect function
+        function playCuteSound() {
+            initAudio();
+            if (!audioContext) return;
+            if (audioContext.state === 'suspended') audioContext.resume();
+
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                osc.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.3); // A5
+
+                gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        function triggerConfetti() {
+            playCuteSound();
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#f472b6', '#fb7185', '#38bdf8', '#a78bfa', '#facc15']
+                });
+            }
+        }
+
+        function openGift() {
+            triggerConfetti();
+            const giftBox = document.getElementById('gift-icon');
+            const message = document.getElementById('secret-message');
+
+            giftBox.classList.remove('shake-gift');
+            giftBox.style.transform = 'scale(1.2) rotate(15deg)';
+
+            setTimeout(() => {
+                giftBox.style.display = 'none';
+                message.classList.remove('hidden');
+                setTimeout(() => {
+                    message.classList.remove('scale-90', 'opacity-0');
+                    message.classList.add('scale-100', 'opacity-100');
+                }, 50);
+            }, 400);
+        }
+
+        function closeGift() {
+            const giftBox = document.getElementById('gift-icon');
+            const message = document.getElementById('secret-message');
+
+            message.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                message.classList.add('hidden');
+                giftBox.style.display = 'inline-block';
+                giftBox.style.transform = 'scale(1) rotate(0deg)';
+                giftBox.classList.add('shake-gift');
+            }, 300);
+        }
+
+        function drawFortune() {
+            playCuteSound();
+            const display = document.getElementById('fortune-display');
+            display.classList.add('animate-pulse');
+
+            display.innerHTML = "🌀 Đang kết nối tới vũ trụ...";
+
+            setTimeout(() => {
+                display.classList.remove('animate-pulse');
+                const fortune = getRandomFortune();
+                display.innerHTML = fortune;
+                triggerConfetti();
+            }, 600);
+        }
+
+        function uploadPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('sister-photo').src = e.target.result;
+                    triggerConfetti();
+                    showToast("📸 Đã cập nhật ảnh em gái thành công!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openEditModal() {
+            document.getElementById('input-sister-name').value = sisterName;
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function saveSisterInfo() {
+            const newName = document.getElementById('input-sister-name').value.trim();
+            const newLetter = document.getElementById('input-letter').value.trim();
+
+            if (newName) {
+                sisterName = newName;
+                document.getElementById('display-sister-name').innerText = newName + "!";
+            }
+
+            if (newLetter) {
+                const letterBody = document.getElementById('custom-letter-body');
+                letterBody.innerHTML = `
+                    <p>Chào ${sisterName},</p>
+                    <p>${newLetter.replace(/\n/g, '<br>')}</p>
+                    <p class="text-right font-semibold text-rose-600 mt-2">— Gửi từ người thương yêu em nhất! ❤️</p>
+                `;
+            }
+
+            closeEditModal();
+            triggerConfetti();
+            showToast("✨ Đã cập nhật tên & lời chúc thành công!");
+        }
+
+        // Toast notification helper
+        function showToast(text) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-sm font-semibold flex items-center gap-2 transform transition-all duration-300 translate-y-10 opacity-0';
+            toast.innerHTML = text;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
